@@ -102,6 +102,13 @@ function updateSectionBadges() {
     const badge = document.getElementById(badgeId);
     if (!badge) return;
     const ids  = STEP_GROUPS[group] || [];
+    const done = ids.filter(id => state.steps[id]).length;
+    badge.textContent = done + '/' + ids.length;
+    badge.style.background = done === ids.length ? 'var(--green-lt)' : '';
+    badge.style.color      = done === ids.length ? 'var(--green)'    : '';
+  });
+}
+
 function initTimer() {
   const display  = document.getElementById('timerDisplay');
   const startBtn = document.getElementById('timerStart');
@@ -247,6 +254,13 @@ function initNetworkStatus() {
   window.addEventListener('online',  () => showToast('onlineToast',  '✅ Back online!'));
 }
 
+function checkCompletion() {
+  const allSteps = Object.values(STEP_GROUPS).flat();
+  const allDone  = allSteps.every(id => state.steps[id]);
+  const card     = document.getElementById('doneCard');
+  if (card) card.hidden = !allDone;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
   initTabs();
@@ -259,16 +273,3 @@ document.addEventListener('DOMContentLoaded', () => {
   initNetworkStatus();
   checkCompletion();
 });
-    const done = ids.filter(id => state.steps[id]).length;
-    badge.textContent = done + '/' + ids.length;
-    badge.style.background = done === ids.length ? 'var(--green-lt)' : '';
-    badge.style.color      = done === ids.length ? 'var(--green)'    : '';
-  });
-}
-
-function checkCompletion() {
-  const allSteps = Object.values(STEP_GROUPS).flat();
-  const allDone  = allSteps.every(id => state.steps[id]);
-  const card     = document.getElementById('doneCard');
-  if (card) card.hidden = !allDone;
-}
